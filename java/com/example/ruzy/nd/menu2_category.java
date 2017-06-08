@@ -88,7 +88,7 @@ public class menu2_category extends AppCompatActivity {
             public boolean onChildClick(ExpandableListView expandableListView, View view,int parentPos, int childPos, long l) {
                 selectChildPos=childPos;
                 selectParentPos=parentPos;
-                Toast.makeText(menu2_category.this, childs.get(parentPos).get(childPos).ID, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(menu2_category.this, childs.get(parentPos).get(childPos).ID, Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(menu2_category.this, SearchActivity.class);
                 i.putExtra("categoryID", childs.get(parentPos).get(childPos).ID);
                 startActivity(i);

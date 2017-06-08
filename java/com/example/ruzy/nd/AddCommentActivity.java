@@ -93,7 +93,7 @@ public class AddCommentActivity extends AppCompatActivity {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if(!dataSnapshot.hasChild(userUid)) {
                                         new manipulateUserInformation().plusEnergy(20);
-                                        new manipulateUserInformation().staticsAdd(categoryID, 0, AddCommentActivity.this);
+                                        new manipulateUserInformation().staticsAdd(categoryID, 0);
                                     }
                                 }
                                 @Override

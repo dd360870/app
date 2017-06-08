@@ -1,11 +1,19 @@
 <resources>
-    <string name="app_name">ND</string>
+    <string name="app_name">BarCoMon</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="register">註冊</string>
+
+
+
+    <!--Info-->
+    <string name="info_title">東華大學資訊工程學系專題展</string>
+    <string name="info_content">專題名稱：行動裝置之商品條碼及時評價系統\n\n專題組員：鄭博安(Barcomon)\n\t\t\t\t\t\t\t\t李至曜(Barcode Reviewer)\n\t\t\t\t\t\t\t\t詹智棋(美術設計)\n\t\t\t\t\t\t\t\t徐瑞壕(Layout.xml)"</string>
+    <string name="info_andyleg">安哥大腿 抱好抱滿</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

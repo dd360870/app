@@ -6,6 +6,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -15,6 +18,8 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutCompat;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,6 +28,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -79,9 +85,7 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, currentFragment).commit();
         }
-
         headerLayout = navigationView.inflateHeaderView(R.layout.nav_header_main);
-        refreshNavHeader();
     }
 
     public void sendNotification(String message) {
@@ -96,12 +100,25 @@ public class MainActivity extends AppCompatActivity
                             MainActivity. class),
                     PendingIntent. FLAG_UPDATE_CURRENT);
             builder.setContentIntent(contentIndent)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), com.example.barcomon.R.drawable.monsterbox_bento))
                     .setSmallIcon(R.drawable.ic_action_comment)
                     .setTicker(message) // 設置狀態列的顯示的資訊
-                    .setWhen(System. currentTimeMillis())// 設置時間發生時間
-                    .setAutoCancel( false) // 設置可以清除
-                    .setContentTitle( "Notification ") // 設置下拉清單裡的標題
-                    .setContentText(message); // 設置上下文內容
+                    .setWhen(System.currentTimeMillis())// 設置時間發生時間
+                    .setAutoCancel(false); // 設置可以清除
+                    //.setContentTitle( "Notification ") // 設置下拉清單裡的標題
+                    //.setContentText(message); // 設置上下文內容
+            RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.custom_notification);
+            contentView.setImageViewResource(R.id.image, com.example.barcomon.R.drawable.monsterbox_bento);
+            contentView.setTextViewText(R.id.title, "Custom notification");
+            contentView.setTextViewText(R.id.text, "This is a custom layout");
+            builder.setContent(contentView);
+            if (Build.VERSION.SDK_INT >= 24) {
+                builder.setCustomContentView(contentView);
+                /*builder.setStyle(new Notification.BigPictureStyle()
+                        .bigPicture(BitmapFactory.decodeResource(getResources(), com.example.barcomon.R.drawable.monsterbox_bento)));*/
+            }else{
+                //do some other thing
+            }
 
             Notification notification = builder.getNotification();
             // 後面的設定會蓋掉前面的
@@ -172,7 +189,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
-            //sendNotification("AABBAAB");
+            //new manipulateUserInformation().staticsAdd("0121", 0);
             Intent i = new Intent(MainActivity.this, SearchActivity.class);
             startActivity(i);
             return true;

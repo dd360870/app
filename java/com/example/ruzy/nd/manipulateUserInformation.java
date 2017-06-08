@@ -3,6 +3,7 @@ package com.example.ruzy.nd;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -32,6 +34,26 @@ public class manipulateUserInformation {
 
     private FirebaseUser mUser;
     private static HashMap<String, String> INFO = createMap();
+    private static List<String> SkillPath = createList();
+
+    private static List<String> createList() {
+        List<String> temp = new ArrayList<>();
+        temp.add(0, "StrongWater");
+        temp.add(1, "H2SO4");
+        temp.add(2, "PaperPlane");
+        temp.add(3, "Encyclopedia");
+        temp.add(4, "Compression");
+        temp.add(5, "CansScroll");
+        temp.add(6, "SweetSmell");
+        temp.add(7, "RottenFood");
+        temp.add(8, "HotWater");
+        temp.add(9, "Coffee");
+        temp.add(10, "RespectOlder");
+        temp.add(11, "LoveTeaching");
+        temp.add(12, "NotResigned");
+        temp.add(13, "DeathAttack");
+        return temp;
+    }
 
     private static HashMap<String, String> createMap() {
         HashMap<String, String> temp = new HashMap<>();
@@ -63,7 +85,7 @@ public class manipulateUserInformation {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public void staticsAdd(final String categoryID,final int mode,final Context context) {
+    public void staticsAdd(final String categoryID,final int mode) {
         final String[] Mode = {"AddComment", "AddProduct"};
         FirebaseDatabase.getInstance().getReference("users/"+mUser.getUid()+"/statics/"+INFO.get(categoryID)+"/"+Mode[mode])
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -72,47 +94,62 @@ public class manipulateUserInformation {
                         int total;
                         if(dataSnapshot.exists()) {
                             total = dataSnapshot.getValue(int.class);
-                            ImageView imageView = new ImageView(context);
-                            imageView.setMaxHeight(500);
-                            imageView.setMaxWidth(500);
-                            imageView.setAdjustViewBounds(true);
-                            android.app.AlertDialog.Builder builder =
-                                    new android.app.AlertDialog.Builder(context)
-                                            .setTitle("獲得新怪獸")
-                                            .setPositiveButton("OK", null);
                             if(mode == 1 && total == 19) {
                                 switch(INFO.get(categoryID)) {
                                     case "日常用品":
-                                        unlockMonster(2);
-                                        imageView.setImageResource(com.example.barcomon.R.drawable.monsterbox_mug);
-                                        builder.setView(imageView).create().show();
-                                        break;
+                                        unlockMonster(2);break;
                                     case "食品":
-                                        unlockMonster(1);
-                                        imageView.setImageResource(com.example.barcomon.R.drawable.monsterbox_can);
-                                        builder.setView(imageView).create().show();
-                                        break;
+                                        unlockMonster(1);break;
                                     case "書籍文具":
-                                        unlockMonster(4);
-                                        imageView.setImageResource(com.example.barcomon.R.drawable.monsterbox_book);
-                                        builder.setView(imageView).create().show();
-                                        break;
+                                        unlockMonster(4);break;
                                 }
                             } else if(mode == 1 && total == 39) {
                                 switch(INFO.get(categoryID)) {
                                     case "食品":
-                                        unlockMonster(3);
-                                        imageView.setImageResource(com.example.barcomon.R.drawable.monsterbox_bento);
-                                        builder.setView(imageView).create().show();
-                                        /*NotificationManager nm = (NotificationManager)
-                                                context.getSystemService(Context.NOTIFICATION_SERVICE);
-                                        NotificationCompat.Builder bui = new NotificationCompat.Builder(context);
-                                        bui.setContentTitle("YeahYeah");
-                                        bui.setContentText("OhNoOhNo");
-                                        bui.setContentInfo("Click to get it!");
-                                        nm.notify(0,bui.build());*/
-                                        break;
-
+                                        unlockMonster(3);break;
+                                }
+                            }
+                            if(mode == 0) {
+                                if(INFO.get(categoryID).matches("食品")) {
+                                    switch(total) {
+                                        case 9:
+                                            unlockSkill(0);break;
+                                        case 19:
+                                            unlockSkill(6);break;
+                                        case 29:
+                                            unlockSkill(7);break;
+                                        case 39:
+                                            unlockSkill(8);break;
+                                        case 49:
+                                            unlockSkill(9);break;
+                                    }
+                                } else if(INFO.get(categoryID).matches("日常用品")) {
+                                    switch(total) {
+                                        case 9:
+                                            unlockSkill(1);break;
+                                        case 19:
+                                            unlockSkill(4);break;
+                                        case 29:
+                                            unlockSkill(13);break;
+                                    }
+                                } else if(INFO.get(categoryID).matches("書籍文具")) {
+                                    switch(total) {
+                                        case 9:
+                                            unlockSkill(2);break;
+                                        case 19:
+                                            unlockSkill(3);break;
+                                        case 29:
+                                            unlockSkill(11);break;
+                                    }
+                                } else if(INFO.get(categoryID).matches("休閒娛樂")) {
+                                    switch(total) {
+                                        case 9:
+                                            unlockSkill(5);break;
+                                        case 19:
+                                            unlockSkill(10);break;
+                                        case 29:
+                                            unlockSkill(12);break;
+                                    }
                                 }
                             }
                         } else {
@@ -136,30 +173,17 @@ public class manipulateUserInformation {
                         char[] monsterArray = monster.toCharArray();
                         monsterArray[number] = '1';
                         dataSnapshot.getRef().setValue(new String(monsterArray));
+                        FirebaseDatabase.getInstance().getReference("users/"+mUser.getUid()+"/userinformation/new/monster").setValue(number);
                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {}
                 });
     }
 
-    /*private void getCategoryData() {
-        FirebaseDatabase.getInstance().getReference("CategoryAsset/").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot d:dataSnapshot.getChildren()) {
-                    String categoryName = d.getKey();
-                    for(DataSnapshot d2:d.getChildren()) {
-                        for(DataSnapshot d3:d2.getChildren()) {
-                            String ID = d3.child("ID").getValue(String.class);
-                            INFO.put(ID,categoryName);
-                        }
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
-    }*/
+    public void unlockSkill(final int number) {
+        FirebaseDatabase.getInstance().getReference("users/"+mUser.getUid()+"/Item/"+SkillPath.get(number)).setValue(1);
+        FirebaseDatabase.getInstance().getReference("users/"+mUser.getUid()+"/userinformation/new/skill").setValue(number);
+    }
 
     public void plusEnergy(final int Add) {
         FirebaseDatabase.getInstance().getReference("users/"+mUser.getUid()+"/userinformation/BarCoMonEnergy")

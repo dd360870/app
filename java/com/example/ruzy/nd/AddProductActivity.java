@@ -238,16 +238,25 @@ public class AddProductActivity extends AppCompatActivity {
         Post p = new Post(name, barCode);
         p.categoryID = this.categoryID;
         mDatabase.getReference("CategoryByID/"+categoryID+"/"+barCode+"/name").setValue(name);
-        new manipulateUserInformation().plusEnergy(40);
-        new manipulateUserInformation().staticsAdd(categoryID ,1, AddProductActivity.this);
+
         mDatabase.getReference("posts/"+barCode).setValue(p).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 dialog.dismiss();
-                Intent i = new Intent(AddProductActivity.this, ProductViewActivity.class);
-                i.putExtra("barCode", barCode);
-                startActivity(i);
-                finish();
+                if(task.isSuccessful()) {
+
+                    Intent i = new Intent(AddProductActivity.this, ProductViewActivity.class);
+                    i.putExtra("barCode", barCode);
+                    new manipulateUserInformation().plusEnergy(40);
+                    new manipulateUserInformation().staticsAdd(categoryID ,1);
+                    startActivity(i);
+                    finish();
+                } else {
+                    new AlertDialog.Builder(AddProductActivity.this)
+                            .setMessage("不明的錯誤")
+                            .setPositiveButton("取消",null)
+                            .show();
+                }
             }
         });
     }

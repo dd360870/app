@@ -315,6 +315,90 @@ public class ProductViewActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        //debug
+        if(FirebaseAuth.getInstance().getCurrentUser()==null)
+            return;
+        FirebaseDatabase.getInstance().getReference("users/"+FirebaseAuth.getInstance().getCurrentUser().getUid()+"/userinformation/new")
+               .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()) {
+                            if(dataSnapshot.child("monster").exists()) {
+                                int number = dataSnapshot.child("monster").getValue(int.class);
+                                ImageView imageView = new ImageView(ProductViewActivity.this);
+                                imageView.setMaxHeight(500);
+                                imageView.setMaxWidth(500);
+                                imageView.setAdjustViewBounds(true);
+                                switch(number) {
+                                    case 0:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.monsterbox_bottle);break;
+                                    case 1:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.monsterbox_can);break;
+                                    case 2:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.monsterbox_mug);break;
+                                    case 3:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.monsterbox_bento);break;
+                                    case 4:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.monsterbox_book);break;
+                                }
+                                new AlertDialog.Builder(ProductViewActivity.this)
+                                        .setTitle("獲得新怪獸")
+                                        .setView(imageView)
+                                        .setPositiveButton("確定", null)
+                                        .show();
+                            } else if(dataSnapshot.child("skill").exists()) {
+                                int number = dataSnapshot.child("skill").getValue(int.class);
+                                ImageView imageView = new ImageView(ProductViewActivity.this);
+                                imageView.setMaxHeight(500);
+                                imageView.setMaxWidth(500);
+                                imageView.setAdjustViewBounds(true);
+                                switch(number) {
+                                    case 0:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.strongwater);break;
+                                    case 1:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.sulfuric);break;
+                                    case 2:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.paperplane);break;
+                                    case 3:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.encyclopedia);break;
+                                    case 4:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.compression);break;
+                                    case 5:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.cansscroll);break;
+                                    case 6:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.sweetsmell);break;
+                                    case 7:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.rottenfood);break;
+                                    case 8:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.hotwater);break;
+                                    case 9:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.coffee);break;
+                                    case 10:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.respectolder);break;
+                                    case 11:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.loveteaching);break;
+                                    case 12:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.notresigned);break;
+                                    case 13:
+                                        imageView.setImageResource(com.example.barcomon.R.drawable.deathattack);break;
+                                }
+                                new AlertDialog.Builder(ProductViewActivity.this)
+                                        .setTitle("獲得新技能")
+                                        .setView(imageView)
+                                        .setPositiveButton("確定", null)
+                                        .show();
+                            }
+                            dataSnapshot.getRef().removeValue();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {}
+                });
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.activity_product_view, menu);
