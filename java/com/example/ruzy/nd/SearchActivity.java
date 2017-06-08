@@ -167,32 +167,27 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private boolean validEAN(String barCode) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(SearchActivity.this)
-                .setTitle("Warning")
-                .setPositiveButton("確定", null);
-        if(barCode.length() < 13 || !android.text.TextUtils.isDigitsOnly(barCode)) {
-            alert.setMessage("Not EAN-13 format");
-            alert.show();
+        if(barCode.length() != 13 || !android.text.TextUtils.isDigitsOnly(barCode)) {
             return false;
         }
-        int sum = 0;
+        int evens = 0;
+        int odds = 0;
+        int checkSum;
         for(int i=0;i<12;i++) {
-            int n = Character.getNumericValue(barCode.charAt(i));
-            if(i % 2 == 0)
-                sum+=n*1;
-            else
-                sum+=n*3;
+            if(i % 2 == 0) {
+                evens+=Character.getNumericValue(barCode.charAt(i));
+            } else {
+                odds+=Character.getNumericValue(barCode.charAt(i));
+            }
         }
-        int ValidBit = Character.getNumericValue(barCode.charAt(12));
-        sum = sum%10;
-        if(sum!=10)
-            sum = 10-sum;
-        if(sum!=ValidBit) {
-            alert.setMessage("InCorrect Checksum");
-            alert.show();
+        odds = odds * 3;
+        int total = odds + evens;
+        if(total % 10 == 0) {
+            checkSum = 0;
+        } else {
+            checkSum = 10 - (total % 10);
         }
-
-        return sum==ValidBit;
+        return checkSum == Character.getNumericValue(barCode.charAt(12));
     }
 
     @Override
